@@ -9,6 +9,7 @@ then
   if [[ "$2" == "--force" ]]
   then
     echo "Forcing rebuild anyway."
+    touch src/main.rs
   else
     exit 1
   fi
