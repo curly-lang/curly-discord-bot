@@ -2,5 +2,6 @@
 .env
 curly-binaries/
 curly-lang/
+curstdlib/
 .build/
 viewCurly
