@@ -28,6 +28,12 @@ with open('.authorised_users', 'r') as f:
     print('uwu')
     authorized_users = [int(i.strip()) for i in f.read().split('\n') if i.strip() != '']
 
+async def send_msg(message, content):
+    try:
+        message.reply(content)
+    except:
+        message.channel.send(content)
+
 @client.event
 async def on_ready():
     print(f'{client.user} has connected to Discord!')
@@ -75,7 +81,7 @@ async def on_message(message):
                 trunc_err_mess = err_mess
             trunc_err_mess += '\n```'
 
-            await message.channel.send(trunc_err_mess)
+            await send_msg(message, trunc_err_mess)
             return
 
         temp_timeout = timeout
@@ -88,19 +94,19 @@ async def on_message(message):
                     if message.author.id in authorized_users:
                         try:
                             if(float(timeout_value) != 0.0):
-                                await message.channel.send(f'Timeout set to {timeout_value}.')
+                                await send_msg(message, f'Timeout set to {timeout_value}.')
                             else:
-                                await message.channel.send('No timeout set.  This could potentially run forever.')
+                                await send_msg(message, 'No timeout set.  This could potentially run forever.')
                             temp_timeout = str(float(timeout_value))
                         except:
-                            await message.channel.send(f'"{timeout_value}" is not a number.  Using default timeout of {timeout} instead.')
+                            await send_msg(message, f'"{timeout_value}" is not a number.  Using default timeout of {timeout} instead.')
                     else:
-                        await message.channel.send(f'Unauthorized user, default timeout of {timeout} used.')
+                        await send_msg(message, f'Unauthorized user, default timeout of {timeout} used.')
             except:
                 if message.author.id in authorized_users:
-                    await message.channel.send('"timeout" used without a parameter!\nTimeout works like:\n\ntimeout [number] ```\n[code here]```')
+                    await send_msg(message, '"timeout" used without a parameter!\nTimeout works like:\n\ntimeout [number] ```\n[code here]```')
                 else:
-                    await message.channel.send(f'Unauthorized user, default timeout of {timeout} used.')
+                    await send_msg(message, f'Unauthorized user, default timeout of {timeout} used.')
 
         subprocess_command = ['timeout', temp_timeout] + subprocess_command
 
@@ -110,10 +116,10 @@ async def on_message(message):
         print(p.stderr)
         print(p.stdout)
         if p.returncode == 124:
-            await message.channel.send(f'Operation timed out:\n```ocaml\n{result}\n```')
+            await send_msg(message, f'Operation timed out:\n```ocaml\n{result}\n```')
         elif p.stdout:
             msg = ansi_escape.sub('', p.stdout)
-            await message.channel.send(f'Result: ```\n{msg}\n```')
+            await send_msg(message, f'Result: ```\n{msg}\n```')
         elif p.stderr:
             err = ansi_escape.sub('', p.stderr)
             err_mess = f'Error: ```ocaml\n{err}'
@@ -130,13 +136,13 @@ async def on_message(message):
                 trunc_err_mess = err_mess
             trunc_err_mess += '\n```'
 
-            await message.channel.send(trunc_err_mess)
+            await send_msg(message, trunc_err_mess)
         else:
-            await message.channel.send(f'Operation executed successfully:\n```ocaml\n{result}\n```')
+            await send_msg(message, f'Operation executed successfully:\n```ocaml\n{result}\n```')
 
     if message.content.startswith("curly-update"):
         if len(message.content.split(" ")) < 2:
-            await message.channel.send('Invalid curly branch!\nValid branches are:\n' + ", ".join(branches.keys()))
+            await send_msg(message, 'Invalid curly branch!\nValid branches are:\n' + ", ".join(branches.keys()))
         elif message.content.split(" ")[1] in list(branches.keys()):
             subprocess_command = ['./curly-update.sh', branches[message.content.split(" ")[1]]]
             if len(message.content.split(" ")) == 3:
@@ -144,27 +150,27 @@ async def on_message(message):
                     if message.author.id in authorized_users:
                         subprocess_command.append("--force")
                     else:
-                        await message.channel.send("The `--force` parameter is currently being locked to authorized users only.  Running regular upgrade.")
+                        await send_msg(message, "The `--force` parameter is currently being locked to authorized users only.  Running regular upgrade.")
                 else:
-                    await message.channel.send("Illegal usage of second parameter.\n Command format follows:```curly-update [branch name] (--force or -f)```")
+                    await send_msg(message, "Illegal usage of second parameter.\n Command format follows:```curly-update [branch name] (--force or -f)```")
                     return
                 if len(message.content.split(" ")) > 3:
-                    await message.channel.send("Too many paraeters passed.\n Command format follows:```curly-update [branch name] (--force or -f)```")
+                    await send_msg(message, "Too many paraeters passed.\n Command format follows:```curly-update [branch name] (--force or -f)```")
                     return
-            await message.channel.send("Running: `" + " ".join(subprocess_command) + "`")
+            await send_msg(message, "Running: `" + " ".join(subprocess_command) + "`")
             p = subprocess.run(subprocess_command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding='utf-8')
             msg = ansi_escape.sub('', p.stdout)
-            await message.channel.send(f'Result: ```\n{msg}\n```')
+            await send_msg(message, f'Result: ```\n{msg}\n```')
         else:
-            await message.channel.send("Invalid curly branch!\nValid branches are:\n" + ", ".join(branches.keys()))
+            await send_msg(message, "Invalid curly branch!\nValid branches are:\n" + ", ".join(branches.keys()))
             return
 
     if message.content == "curly-restart":
         if message.author.id in authorized_users:
-            await message.channel.send("Restarting...")
+            await send_msg(message, "Restarting...")
             await client.logout()
         else:
-            await message.channel.send("Unauthorized user, cancelling restart.")
+            await send_msg(message, "Unauthorized user, cancelling restart.")
 
 
 client.run(TOKEN)
