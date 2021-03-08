@@ -30,13 +30,17 @@ with open('.authorised_users', 'r') as f:
 
 async def send_msg(message, content):
     try:
-        message.reply(content)
+        await message.reply(content)
     except:
-        message.channel.send(content)
+        await message.channel.send(content)
 
 @client.event
 async def on_ready():
     print(f'{client.user} has connected to Discord!')
+
+@client.event
+async def on_message_edit(before, after):
+    await on_message(after)
 
 @client.event
 async def on_message(message):

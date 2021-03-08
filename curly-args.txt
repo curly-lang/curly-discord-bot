@@ -1,0 +1,12 @@
+-L/home/curly/curly-discord-bot/curstdlib/ioterm
+-lioterm
+/home/curly/curly-discord-bot/curstdlib/math/math.curly
+/home/curly/curly-discord-bot/curstdlib/ioterm/ioterm.curly
+-lcurl
+-L/home/curly/curly-discord-bot/curstdlib/io/curl
+-lcurlbind
+/home/curly/curly-discord-bot/curstdlib/io/curl/curl.curly
+/home/curly/curly-discord-bot/curstdlib/temp/cons_boxes/cons_boxes.curly
+-L/home/curly/curly-discord-bot/curstdlib/temp/cons_boxes
+-lcons
+/home/curly/curly-discord-bot/curstdlib/temp/ioterm/ioterm.curly
