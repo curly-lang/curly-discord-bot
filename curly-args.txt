@@ -8,6 +8,7 @@
 /home/curly/curstdlib/temp/cons_boxes/Temp::Cons_Boxes.o
 /home/curly/curstdlib/temp/cons_boxes/temp-cons_boxes.curly
 
+-lcurl
 -l
 /home/curly/curstdlib/io/curl/IO::Curl.o
 /home/curly/curstdlib/io/curl/io-curl.curly
