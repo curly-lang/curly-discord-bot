@@ -28,6 +28,9 @@ with open('.authorised_users', 'r') as f:
     print('uwu')
     authorized_users = [int(i.strip()) for i in f.read().split('\n') if i.strip() != '']
 
+def sanitize_message(message_content):
+    return "``'".join(message_content.split("```"))
+
 async def send_msg(message, content):
     try:
         await message.reply(content)
@@ -48,6 +51,7 @@ async def on_message(message):
         return
 
     if message.content.startswith("!curly"):
+        await message.add_reaction(client.get_emoji(805437821757816862))
         dev = message.content.startswith('!curly-dev')
         print(f'Received message:\n{message.content}')
         matches = code_blocks.findall(message.content)
@@ -70,7 +74,7 @@ async def on_message(message):
         print(comp.stdout)
 
         if comp.stderr:
-            err = ansi_escape.sub('', comp.stderr)
+            err = sanitize_message(ansi_escape.sub('', comp.stderr))
             err_mess = f'Error: ```ocaml\n{err}'
             trunc_err_mess = ''
             TRUNCATION_MESSAGE = 'Error truncated because of 2000 character limit.'
@@ -122,10 +126,10 @@ async def on_message(message):
         if p.returncode == 124:
             await send_msg(message, f'Operation timed out:\n```ocaml\n{result}\n```')
         elif p.stdout:
-            msg = ansi_escape.sub('', p.stdout)
+            msg = sanitize_message(ansi_escape.sub('', p.stdout))
             await send_msg(message, f'Result: ```\n{msg}\n```')
         elif p.stderr:
-            err = ansi_escape.sub('', p.stderr)
+            err = sanitize_message(ansi_escape.sub('', p.stderr))
             err_mess = f'Error: ```ocaml\n{err}'
             trunc_err_mess = ''
             TRUNCATION_MESSAGE = 'Error truncated because of 2000 character limit.'

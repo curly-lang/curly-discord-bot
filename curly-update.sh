@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd curly-lang
+cd ../curly-lang
 git checkout $1 > /dev/null
 gitpull=`git pull`
 if [[ "$gitpull" == "Already up to date." ]]
@@ -16,4 +16,5 @@ then
 fi
 echo "Building..."
 cargo build
-cp target/debug/curlyc "../curly-binaries/curlyc-$1"
+cp target/debug/curlyc "../curly-discord-bot/curly-binaries/curlyc-$1"
+
